@@ -73,11 +73,19 @@ router.post("/login", async (req, res) => {
 
 router.post("/student-registration", validate,roleSalesRep,async (req, res) => {
   try {
-    let doc = new StudentModel(req.body);
-    await doc.save();
-    res.status(201).send({
-      message: "student Created successfully",
-    });
+    let user = await StudentModel.findOne({ email: req.body.email });
+    if (!user) {
+      let doc = new StudentModel(req.body);
+      await doc.save();
+      res.status(201).send({
+        message: "student Created successfully",
+      });
+    }else{
+      res.send({
+        message:"user already exist"
+      })
+    }
+    
   } catch (error) {
     console.log(error);
     res.status(500).send({ message: "Internal Server Error", error });
@@ -87,16 +95,16 @@ router.post("/student-registration", validate,roleSalesRep,async (req, res) => {
 router.post("/course-registration", validate,roleStudent,async (req, res) => {
   try {
     let course = await CourseModel.findOne({ email: req.body.email });
-    // if(!student){
+    if(!student){
       let doc = new CourseModel(req.body);
       await doc.save();
       res.status(201).send({
         message: "Course Created successfully",
   course
       });
-    // }else{
-      // res.status(400).send({ message: "Course already Created" });
-    // }
+    }else{
+      res.status(400).send({ message: "Course already Created" });
+    }
 
     
   } catch (error) {
@@ -107,8 +115,8 @@ router.post("/course-registration", validate,roleStudent,async (req, res) => {
 
 router.post("/training-registration", validate,roleAdmin,async (req, res) => {
   try {
-    let training = await TrainingModel.findOne({ Name: req.body.Name });
-    // if(!student){
+    // let training = await TrainingModel.findOne({ Name: req.body.Name });
+    // if(!training){
       let doc = new TrainingModel(req.body);
       await doc.save();
       res.status(201).send({
@@ -116,7 +124,7 @@ router.post("/training-registration", validate,roleAdmin,async (req, res) => {
         training
       });
     // }else{
-      // res.status(400).send({ message: "Course already Created" });
+      res.status(400).send({ message: "training already scheduled" });
     // }
 
     
@@ -260,7 +268,7 @@ router.get("/display-course", async (req, res) => {
   }
 });
 
-router.get("/display-timing", async (req, res) => {
+router.get("/display-timing", validate,async (req, res) => {
   try {
     let data = await TrainingModel.find();
     console.log(data)
