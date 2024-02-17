@@ -113,7 +113,7 @@ router.post("/course-registration", validate,roleStudent,async (req, res) => {
   }
 });
 
-router.post("/training-registration", validate,roleAdmin,async (req, res) => {
+router.post("/training-registration",async (req, res) => {
   try {
     // let training = await TrainingModel.findOne({ Name: req.body.Name });
     // if(!training){
