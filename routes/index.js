@@ -115,17 +115,17 @@ router.post("/course-registration", validate,roleStudent,async (req, res) => {
 
 router.post("/training-registration",async (req, res) => {
   try {
-    // let training = await TrainingModel.findOne({ Name: req.body.Name });
-    // if(!training){
+    let training = await TrainingModel.findOne({ Name: req.body.Name });
+    if(!training){
       let doc = new TrainingModel(req.body);
       await doc.save();
       res.status(201).send({
         message: "Training Created successfully",
-        training
+        
       });
-    // }else{
+    }else{
       res.status(400).send({ message: "training already scheduled" });
-    // }
+    }
 
     
   } catch (error) {
